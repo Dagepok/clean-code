@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using FluentAssertions;
 
 namespace Markdown
 {
@@ -6,12 +7,8 @@ namespace Markdown
 	{
 		public string RenderToHtml(string markdown)
 		{
+            
 			return markdown; //TODO
 		}
-	}
-
-	[TestFixture]
-	public class Md_ShouldRender
-	{
 	}
 }
