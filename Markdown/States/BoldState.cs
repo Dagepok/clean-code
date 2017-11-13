@@ -9,6 +9,8 @@
         public BoldState(int startIndex, State parent) : base(startIndex)
             => Parent = parent;
 
+
+        public override int DeletedUnderlines => 4;
         public override string OpenTag => "<strong>";
         public override string CloseTag => "</strong>";
 
@@ -21,6 +23,7 @@
             if (IsIndexNearNumbers(renderer.Markdown, renderer.Index, underlinesCount)) return false;
             return underlinesCount < 3;
         }
+
 
         public override State ChangeState(ToHtmlRenderer renderer, int underlinesCount)
         {

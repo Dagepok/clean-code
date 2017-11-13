@@ -1,6 +1,9 @@
-﻿using System.Security.Policy;
+﻿using System;
+using System.Security.Policy;
+using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace Markdown
 {
@@ -67,5 +70,6 @@ namespace Markdown
 
             result.Should().Be(html);
         }
+    }
     }
 }

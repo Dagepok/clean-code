@@ -12,6 +12,8 @@
 
         public override string CloseTag => "";
 
+        public override int DeletedUnderlines => 0;
+
         public override State ChangeState(ToHtmlRenderer renderer, int underlinesCount)
         {
             EndIndex = renderer.Index;

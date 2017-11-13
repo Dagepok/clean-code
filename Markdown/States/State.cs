@@ -9,6 +9,7 @@ namespace Markdown
             StartIndex = startIndex;
             EndIndex = -1;
         }
+
         protected State Parent { get; set; }
         protected bool IsInner => Parent != null;
         public bool IsClosed => EndIndex > StartIndex;
@@ -16,7 +17,8 @@ namespace Markdown
         protected int EndIndex { get; set; }
         public abstract string OpenTag { get; }
         public abstract string CloseTag { get; }
-        public int IndexShift => OpenTag.Length + CloseTag.Length;
+        public int IndexShift => OpenTag.Length + CloseTag.Length - DeletedUnderlines;
+        public abstract int DeletedUnderlines { get; }
 
         public abstract State ChangeState(ToHtmlRenderer renderer, int underlinesCount);
         public abstract string SetTags(ToHtmlRenderer renderer, int indexShift);

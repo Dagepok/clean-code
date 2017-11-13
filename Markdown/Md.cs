@@ -12,7 +12,5 @@ namespace Markdown
             var renderer = new ToHtmlRenderer(markdown);
             return renderer.Render();
         }
-
-
     }
 }
