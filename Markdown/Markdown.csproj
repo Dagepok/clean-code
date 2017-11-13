@@ -55,6 +55,11 @@
     <Compile Include="Md.cs" />
     <Compile Include="Md_ShouldRender.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="States\BoldState.cs" />
+    <Compile Include="States\CommonState.cs" />
+    <Compile Include="States\ItalicState.cs" />
+    <Compile Include="States\State.cs" />
+    <Compile Include="ToHtmlRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
