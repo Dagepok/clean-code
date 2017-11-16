@@ -1,9 +1,6 @@
-﻿using System;
-using System.Security.Policy;
-using System.Text;
+﻿using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace Markdown
 {
@@ -70,6 +67,24 @@ namespace Markdown
 
             result.Should().Be(html);
         }
-    }
+
+
+        [TestCase(1)]
+        [TestCase(10)]
+        [TestCase(100)]
+        [TestCase(1000)]
+        [TestCase(5000)]
+        [TestCase(10000)]
+        
+        public void MD_ShouldRender_Fast(int count)
+        {
+            var md = new Md();
+            var str = "_a_ __b__ \\_";
+            var sb = new StringBuilder(str);
+
+            for (var i = 0; i < count; i++)
+                sb.Append(str);
+            var result = md.RenderToHtml(sb.ToString());
+        }
     }
 }

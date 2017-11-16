@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Markdown
+﻿namespace Markdown
 {
     public class Md
     {
-
         public string RenderToHtml(string markdown)
         {
-            var renderer = new ToHtmlRenderer(markdown);
+            var renderer = new HtmlRenderer(markdown);
             return renderer.Render();
         }
     }

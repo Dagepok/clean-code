@@ -6,15 +6,16 @@
         {
         }
 
+        public override bool IsClosed
+            => !(IsInsideItalic)
+            && EndIndex > StartIndex;
+
+        private bool IsInsideItalic => IsInner && Parent is ItalicState && Parent.IsClosed;
+
         public BoldState(int startIndex, State parent) : base(startIndex)
             => Parent = parent;
 
-
-        public override int DeletedUnderlines => 4;
-        public override string OpenTag => "<strong>";
-        public override string CloseTag => "</strong>";
-
-        public override bool IsNeedChangeState(ToHtmlRenderer renderer, int underlinesCount)
+        public override bool IsNeedChangeState(HtmlRenderer renderer, int underlinesCount)
         {
             if (underlinesCount == 1)
                 if (IsIndexBeforeWhiteSpace(renderer.Markdown, renderer.Index, underlinesCount)) return false;
@@ -24,26 +25,23 @@
             return underlinesCount < 3;
         }
 
+        public override Tag GetEndTag() => new BoldTag(false);
 
-        public override State ChangeState(ToHtmlRenderer renderer, int underlinesCount)
+        public override Tag GetStartTag() => new BoldTag(true);
+
+
+        public override Tag Tag => new BoldTag(true);
+
+        public override State ChangeState(HtmlRenderer renderer, int underlinesCount)
         {
-
             if (underlinesCount == 1) return new ItalicState(renderer.Index, this);
             EndIndex = renderer.Index++;
-            if (underlinesCount == 2) return IsInner
-               ? Parent
-               : new CommonState(renderer.Index); ;
+            if (underlinesCount == 2)
+                return IsInner
+                    ? Parent
+                    : new CommonState(renderer.Index);
+            ;
             return this;
-        }
-
-        public override string SetTags(ToHtmlRenderer renderer, int indexShift)
-        {
-            if (IsInner && Parent.IsClosed) return renderer.Markdown;
-            return renderer.Markdown
-                .Remove(EndIndex + indexShift, 2)
-                .Insert(EndIndex + indexShift, CloseTag)
-                .Remove(StartIndex + indexShift, 2)
-                .Insert(StartIndex + indexShift, OpenTag);
         }
     }
 }

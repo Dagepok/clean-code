@@ -6,15 +6,11 @@
         {
         }
 
-        public new bool IsClosed => true;
+        public override Tag Tag => new Tag(false);
 
-        public override string OpenTag => "";
+        public override bool IsClosed => false;
 
-        public override string CloseTag => "";
-
-        public override int DeletedUnderlines => 0;
-
-        public override State ChangeState(ToHtmlRenderer renderer, int underlinesCount)
+        public override State ChangeState(HtmlRenderer renderer, int underlinesCount)
         {
             EndIndex = renderer.Index;
             if (underlinesCount == 1) return new ItalicState(renderer.Index);
@@ -22,7 +18,8 @@
             return this;
         }
 
-        public override string SetTags(ToHtmlRenderer renderer, int indexShift) 
-            => renderer.Markdown;
+        public override Tag GetEndTag() => new Tag(false);
+
+        public override Tag GetStartTag() => new Tag(true);
     }
 }

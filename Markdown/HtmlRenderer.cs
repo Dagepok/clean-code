@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Runtime.Serialization;
+using System.Text;
 
 namespace Markdown
 {
-    public class ToHtmlRenderer
+    public class HtmlRenderer
     {
-        public ToHtmlRenderer(string markdown)
+        public HtmlRenderer(string markdown)
         {
             Markdown = markdown;
             UsedStates = new List<State>();
@@ -22,16 +23,20 @@ namespace Markdown
             State = new CommonState(Index);
             UsedStates.Add(State);
             for (; Index < Markdown.Length; Index++)
-                CheckChar();
+                TryRenderChar();
             SetTages();
             return RemoveEscapeChars(Markdown);
         }
 
         private static string RemoveEscapeChars(string str)
         {
+            var sb = new StringBuilder();
             for (var i = 0; i < str.Length; i++)
-                if (str[i] == '\\') str = str.Remove(i, 1);
-            return str;
+                if (str[i] != '\\')
+                    sb.Append(str[i]);
+                else if (i != str.Length - 1)
+                    sb.Append(str[++i]);
+            return sb.ToString();
         }
 
 
@@ -46,16 +51,33 @@ namespace Markdown
 
         private void SetTages()
         {
-            var indexShift = 0;
-            foreach (var state in UsedStates)
+            var sb = new StringBuilder();
+            var tags = GetTags();
+            for (var i = 0; i < Markdown.Length; i++)
             {
-                if (!state.IsClosed) continue;
-                Markdown = state.SetTags(this, indexShift);
-                indexShift += state.IndexShift;
+                if (tags.ContainsKey(i))
+                {
+                    sb.Append(tags[i]);
+                    i += tags[i].UnderlinesCount - 1;
+                }
+                else sb.Append(Markdown[i]);
             }
+            Markdown = sb.ToString();
         }
 
-        private void CheckChar()
+        private Dictionary<int, Tag> GetTags()
+        {
+            var tags = new Dictionary<int, Tag>();
+            foreach (var state in UsedStates)
+                if (state.IsClosed)
+                {
+                    tags.Add(state.EndIndex, state.GetEndTag());
+                    tags.Add(state.StartIndex, state.GetStartTag());
+                }
+            return tags;
+        }
+
+        private void TryRenderChar()
         {
             if (Markdown[Index] == '\\') Index++;
             else if (Markdown[Index] == '_') CheckAndChangeState();
@@ -74,6 +96,5 @@ namespace Markdown
             if (!UsedStates.Contains(State))
                 UsedStates.Add(State);
         }
-
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Runtime.Remoting.Messaging;
-
-namespace Markdown
+﻿namespace Markdown
 {
     public abstract class State
     {
@@ -10,21 +8,19 @@ namespace Markdown
             EndIndex = -1;
         }
 
+        public abstract Tag Tag { get; }
+
         protected State Parent { get; set; }
         protected bool IsInner => Parent != null;
-        public bool IsClosed => EndIndex > StartIndex;
-        protected int StartIndex { get; }
-        protected int EndIndex { get; set; }
-        public abstract string OpenTag { get; }
-        public abstract string CloseTag { get; }
-        public int IndexShift => OpenTag.Length + CloseTag.Length - DeletedUnderlines;
-        public abstract int DeletedUnderlines { get; }
+        public virtual bool IsClosed => EndIndex > StartIndex;
+        public int StartIndex { get; protected set; }
+        public int EndIndex { get; protected set; }
+        public int IndexShift => Tag.OpenTag.Length + Tag.CloseTag.Length - Tag.UnderlinesCount;
 
-        public abstract State ChangeState(ToHtmlRenderer renderer, int underlinesCount);
-        public abstract string SetTags(ToHtmlRenderer renderer, int indexShift);
+        public abstract State ChangeState(HtmlRenderer renderer, int underlinesCount);
 
 
-        public virtual bool IsNeedChangeState(ToHtmlRenderer renderer, int underlinesCount)
+        public virtual bool IsNeedChangeState(HtmlRenderer renderer, int underlinesCount)
         {
             if (!IsIndexNearNumbers(renderer.Markdown, renderer.Index, underlinesCount) &&
                 !IsIndexBeforeWhiteSpace(renderer.Markdown, renderer.Index, underlinesCount))
@@ -41,9 +37,17 @@ namespace Markdown
         }
 
         protected bool IsIndexAfterWhiteSpace(string str, int index)
-            => index > 0 && char.IsWhiteSpace(str[index - 1]);
+        {
+            return index > 0 && char.IsWhiteSpace(str[index - 1]);
+        }
 
         protected bool IsIndexBeforeWhiteSpace(string str, int index, int underlinsCount)
-            => index + underlinsCount < str.Length && char.IsWhiteSpace(str[index + underlinsCount]);
+        {
+            return index + underlinsCount < str.Length && char.IsWhiteSpace(str[index + underlinsCount]);
+        }
+       
+        public abstract Tag GetEndTag();
+
+        public abstract Tag GetStartTag();
     }
 }

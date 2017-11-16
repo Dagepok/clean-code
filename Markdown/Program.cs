@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Markdown
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-		}
-	}
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            var md = new Md();
+            var spec = File.ReadAllText("Spec.Md");
+            var parts = spec.Split(new[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var resultParts = parts.Select(md.RenderToHtml);
+            var result = string.Join("\r\n\r\n", resultParts);
+            File.WriteAllText("result.html", result);
+        }
+    }
 }

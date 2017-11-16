@@ -54,12 +54,14 @@
   <ItemGroup>
     <Compile Include="Md.cs" />
     <Compile Include="Md_ShouldRender.cs" />
+    <Compile Include="Md_ShouldRender_Specification.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="States\BoldState.cs" />
     <Compile Include="States\CommonState.cs" />
     <Compile Include="States\ItalicState.cs" />
     <Compile Include="States\State.cs" />
-    <Compile Include="ToHtmlRenderer.cs" />
+    <Compile Include="Tag.cs" />
+    <Compile Include="HtmlRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -9,11 +9,8 @@
         public ItalicState(int startIndex, State parent) : base(startIndex)
             => Parent = parent;
 
-        public override string OpenTag => "<em>";
-        public override string CloseTag => "</em>";
-        public override int DeletedUnderlines => 2;
 
-        public override bool IsNeedChangeState(ToHtmlRenderer renderer, int underlinesCount)
+        public override bool IsNeedChangeState(HtmlRenderer renderer, int underlinesCount)
         {
             if (underlinesCount == 1)
                 if (IsIndexAfterWhiteSpace(renderer.Markdown, renderer.Index)) return false;
@@ -23,9 +20,14 @@
             return underlinesCount < 3;
         }
 
+        public override Tag GetEndTag() => new ItalicTag(false);
+
+        public override Tag GetStartTag() => new ItalicTag(true);
 
 
-        public override State ChangeState(ToHtmlRenderer renderer, int underlinesCount)
+        public override Tag Tag => new ItalicTag(true);
+
+        public override State ChangeState(HtmlRenderer renderer, int underlinesCount)
         {
             if (underlinesCount == 2) return new BoldState(renderer.Index++, this);
             EndIndex = renderer.Index;
@@ -34,19 +36,6 @@
                     ? Parent
                     : new CommonState(renderer.Index);
             return this;
-        }
-
-        public override string SetTags(ToHtmlRenderer renderer, int indexShift)
-        {
-            if (IsInner && Parent.IsClosed)
-                indexShift = indexShift - Parent.CloseTag.Length + Parent.DeletedUnderlines/2;
-           
-            //return renderer.Markdown
-            var str = renderer.Markdown.Remove(EndIndex + indexShift, 1);
-            str = str.Insert(EndIndex + indexShift, CloseTag);
-            str = str.Remove(StartIndex + indexShift, 1);
-            str = str.Insert(StartIndex + indexShift, OpenTag);
-            return str;
         }
     }
 }
