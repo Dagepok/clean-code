@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.Text;
@@ -93,7 +94,7 @@ namespace Markdown
             }
             if (!State.IsNeedChangeState(this, underlinesCount)) return;
             State = State.ChangeState(this, underlinesCount);
-            if (!UsedStates.Contains(State))
+            if (UsedStates.Count <= 1 || UsedStates[UsedStates.Count - 1].Parent != State)
                 UsedStates.Add(State);
         }
     }

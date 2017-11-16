@@ -10,7 +10,7 @@
 
         public abstract Tag Tag { get; }
 
-        protected State Parent { get; set; }
+        internal State Parent { get; set; }
         protected bool IsInner => Parent != null;
         public virtual bool IsClosed => EndIndex > StartIndex;
         public int StartIndex { get; protected set; }
